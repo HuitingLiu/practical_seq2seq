@@ -1,7 +1,5 @@
-EN_WHITELIST = '0123456789abcdefghijklmnopqrstuvwxyz ' # space is included in whitelist
-EN_BLACKLIST = '!"#$%&\'()*+,-./:;<=>?@[\\]^_`{|}~\''
-
-FILENAME = 'data/chat.txt'
+PUNCTUATION_CHAR = set(['.', '..', '...', '....', '.....', '......', ',', ',,', ',,,', '!', '!!', '!!!', '?', '??', '???', '????'])
+PUNCTUATION_IDS = set([])
 
 limit = {
         'maxq' : 20,
@@ -34,6 +32,8 @@ def process_data(raw_file, vocab_file):
             idx2w.append(word)
             w2idx[word] = idx
             freq_dist[word] = 0
+            if word in PUNCTUATION_CHAR:
+                PUNCTUATION_IDS.add(idx)
 
     idx_q = []
     idx_a = []
@@ -43,14 +43,31 @@ def process_data(raw_file, vocab_file):
             parts = line.split('|')
             q_ids = [int(val) for val in parts[0].split(' ')]
             a_ids = [int(val) for val in parts[1].split(' ')]
-            idx_q.append(q_ids)
-            idx_a.append(a_ids)
             for val in q_ids:
                 word = idx2w[val]
                 freq_dist[word] += 1
             for val in a_ids:
                 word = idx2w[val]
                 freq_dist[word] += 1
+
+            #Filter out some long sentences
+            if len(q_ids) > limit['maxq'] or len(a_ids) > limit['maxa']:
+                continue
+
+            #Cancel the last punctuation
+            if q_ids[-1] in PUNCTUATION_IDS:
+                q_ids[-1] = 0
+            if a_ids[-1] in PUNCTUATION_IDS:
+                a_ids[-1] = 0
+            #Padding
+            q_ids += [0] * (limit['maxq'] - len(q_ids))
+            a_ids += [0] * (limit['maxa'] - len(a_ids))
+            idx_q.append(q_ids)
+            idx_a.append(a_ids)
+
+    # Source and Target Set: (DataSize, 20)
+    idx_q = np.array(idx_q)
+    idx_a = np.array(idx_a)
 
     # save them
     np.save('idx_q.npy', idx_q)
