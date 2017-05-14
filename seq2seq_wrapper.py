@@ -141,6 +141,7 @@ class Seq2Seq(object):
         # run M epochs
         for i in range(self.epochs):
             try:
+                print("epoch:%d/%d" % (i, self.epochs))
                 self.train_batch(sess, train_set)
                 if i and i% (self.epochs//100) == 0: # TODO : make this tunable by the user
                     # save model to disk
