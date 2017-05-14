@@ -163,6 +163,7 @@ class Seq2Seq(object):
         # get checkpoint state
         ckpt = tf.train.get_checkpoint_state(self.ckpt_path)
         # restore session
+        print(ckpt.model_checkpoint_path)
         if ckpt and ckpt.model_checkpoint_path:
             saver.restore(sess, ckpt.model_checkpoint_path)
         # return to user
