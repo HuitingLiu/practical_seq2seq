@@ -34,7 +34,7 @@ def process_data(raw_file, vocab_file):
             freq_dist[word] = 0
             if word in PUNCTUATION_CHAR:
                 PUNCTUATION_IDS.add(idx)
-
+    print(PUNCTUATION_IDS)
     idx_q = []
     idx_a = []
     with open(raw_file, 'r') as f:

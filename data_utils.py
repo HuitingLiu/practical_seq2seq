@@ -44,16 +44,19 @@ def rand_batch_gen(x, y, batch_size):
 
 
 
-def encode(sequence, lookup, separator=' ', unk='UNknown'):
+def encode(sequence, lookup, separator=' ', unk='UNknown', maxlen=20):
     word_list = sequence.split(' ')
+    if len(word_list) >= 20:
+        word_list = word_list[:20]
     id_list = []
     for word in word_list:
         if word in lookup:
             id_list.append(lookup[word])
         else:
             id_list.append(lookup[unk])
+    id_list += [0] * (maxlen - len(id_list))
     ids = np.array([id_list])
-    return ids
+    return ids.T
 '''
  a generic decode function
     inputs : sequence, lookup

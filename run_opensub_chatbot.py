@@ -33,8 +33,11 @@ sess = model.restore_last_session()
 
 while True:
     query = input('Input:\t')
+
+    if query == 'quit' or query == 'exit':
+        exit(0)
+        
     ids = data_utils.encode(sequence=query, lookup=metadata['w2idx'])
     output = model.predict(sess, ids)
-    print(output.shape)
-    reply = data_utils.decode(sequence=output, lookup=metadata['idx2w'], separator=' ')
-    print('q : [{0}]; a : [{1}]'.format(query, reply))
+    reply = data_utils.decode(sequence=output[0], lookup=metadata['idx2w'], separator=' ')
+    print('Output:'+reply)
