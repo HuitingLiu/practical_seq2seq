@@ -42,26 +42,20 @@ def rand_batch_gen(x, y, batch_size):
         sample_idx = sample(list(np.arange(len(x))), batch_size)
         yield x[sample_idx].T, y[sample_idx].T
 
-#'''
-# convert indices of alphabets into a string (word)
-#    return str(word)
-#
-#'''
-#def decode_word(alpha_seq, idx2alpha):
-#    return ''.join([ idx2alpha[alpha] for alpha in alpha_seq if alpha ])
-#
-#
-#'''
-# convert indices of phonemes into list of phonemes (as string)
-#    return str(phoneme_list)
-#
-#'''
-#def decode_phonemes(pho_seq, idx2pho):
-#    return ' '.join( [ idx2pho[pho] for pho in pho_seq if pho ])
 
 
+def encode(sequence, lookup, separator=' ', unk='UNknown'):
+    word_list = sequence.split(' ')
+    id_list = []
+    for word in word_list:
+        if word in lookup:
+            id_list.append(lookup[word])
+        else:
+            id_list.append(lookup[unk])
+    ids = np.array([id_list])
+    return ids
 '''
- a generic decode function 
+ a generic decode function
     inputs : sequence, lookup
 
 '''
