@@ -8,6 +8,8 @@ import numpy as np
 from datasets.twitter import data
 import data_utils
 
+tf.flags.DEFINE_boolean("restore", False, "restore the model from checkpoints")
+
 # load data from pickle and npy files
 metadata, idx_q, idx_a = data.load_data(PATH='datasets/opensubtitle/')
 (trainX, trainY), (testX, testY), (validX, validY) = data_utils.split_dataset(idx_q, idx_a)
@@ -34,12 +36,10 @@ model = seq2seq_wrapper.Seq2Seq(xseq_len=xseq_len,
                                )
 
 
-# In[8]:
-
 val_batch_gen = data_utils.rand_batch_gen(validX, validY, 32)
 train_batch_gen = data_utils.rand_batch_gen(trainX, trainY, batch_size)
 
+if FLAGS.restore:
+    sess = model.restore_last_session()
 
-# In[9]:
-sess = model.restore_last_session()
 sess = model.train(train_batch_gen, val_batch_gen)
