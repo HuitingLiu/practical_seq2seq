@@ -54,11 +54,10 @@ def process_data(raw_file, vocab_file):
             if len(q_ids) > limit['maxq'] or len(a_ids) > limit['maxa']:
                 continue
 
-            #Cancel the last punctuation
+            #Cancel the last punctuation for the input
             if q_ids[-1] in PUNCTUATION_IDS:
                 q_ids[-1] = 0
-            if a_ids[-1] in PUNCTUATION_IDS:
-                a_ids[-1] = 0
+
             #Padding
             q_ids += [0] * (limit['maxq'] - len(q_ids))
             a_ids += [0] * (limit['maxa'] - len(a_ids))

@@ -33,7 +33,7 @@ class Seq2Seq(object):
             '''
             About <GO> and <EOS> symbol, here <GO> and <EOS> are both zero. As you can see that if
             the last value of label is padding, it is <EOS> in natural. And the dec_ip adds a zero
-            in the beginning manually. 
+            in the beginning manually.
             '''
 
             #  labels that represent the real outputs
@@ -58,15 +58,15 @@ class Seq2Seq(object):
             # for parameter sharing between training model
             #  and testing model
             with tf.variable_scope('decoder') as scope:
-                # build the seq2seq model
+                # build the seq2seq model using embedding_attention_seq2seq
                 #  inputs : encoder, decoder inputs, LSTM cell type, vocabulary sizes, embedding dimensions
-                self.decode_outputs, self.decode_states = tf.contrib.legacy_seq2seq.embedding_rnn_seq2seq(
+                self.decode_outputs, self.decode_states = tf.contrib.legacy_seq2seq.embedding_attention_seq2seq(
                     self.enc_ip, self.dec_ip, stacked_lstm, xvocab_size, yvocab_size, emb_dim)
                 # share parameters
                 scope.reuse_variables()
                 # testing model, where output of previous timestep is fed as input
                 #  to the next timestep
-                self.decode_outputs_test, self.decode_states_test = tf.contrib.legacy_seq2seq.embedding_rnn_seq2seq(
+                self.decode_outputs_test, self.decode_states_test = tf.contrib.legacy_seq2seq.embedding_attention_seq2seq(
                     self.enc_ip, self.dec_ip, stacked_lstm, xvocab_size, yvocab_size, emb_dim,
                     feed_previous=True)
 
