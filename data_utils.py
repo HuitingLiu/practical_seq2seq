@@ -55,9 +55,11 @@ def encode(sequence, lookup, separator=' ', unk='UNknown', maxlen=20):
         else:
             id_list.append(lookup[unk])
     id_list += [0] * (maxlen - len(id_list))
+    #Reverse the input to get better performance
+    id_list.reverse()
     ids = np.array([id_list])
     return ids.T
-    
+
 '''
  a generic decode function
     inputs : sequence, lookup
