@@ -62,6 +62,8 @@ def process_data(raw_file, vocab_file):
             #Padding
             q_ids += [0] * (limit['maxq'] - len(q_ids))
             a_ids += [0] * (limit['maxa'] - len(a_ids))
+            #Reverse the input to get better performance
+            q_ids.reverse()
             idx_q.append(q_ids)
             idx_a.append(a_ids)
 

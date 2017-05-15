@@ -30,7 +30,7 @@ model = seq2seq_wrapper.Seq2Seq(xseq_len=xseq_len,
                                yvocab_size=yvocab_size,
                                ckpt_path='ckpt/opensubtitle/',
                                emb_dim=emb_dim,
-                               num_layers=3
+                               num_layers=4
                                )
 
 

@@ -57,6 +57,7 @@ def encode(sequence, lookup, separator=' ', unk='UNknown', maxlen=20):
     id_list += [0] * (maxlen - len(id_list))
     ids = np.array([id_list])
     return ids.T
+    
 '''
  a generic decode function
     inputs : sequence, lookup

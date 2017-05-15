@@ -30,6 +30,12 @@ class Seq2Seq(object):
                             dtype=tf.int64,
                             name='ei_{}'.format(t)) for t in range(xseq_len) ]
 
+            '''
+            About <GO> and <EOS> symbol, here <GO> and <EOS> are both zero. As you can see that if
+            the last value of label is padding, it is <EOS> in natural. And the dec_ip adds a zero
+            in the beginning manually. 
+            '''
+
             #  labels that represent the real outputs
             self.labels = [ tf.placeholder(shape=[None,],
                             dtype=tf.int64,
@@ -54,14 +60,14 @@ class Seq2Seq(object):
             with tf.variable_scope('decoder') as scope:
                 # build the seq2seq model
                 #  inputs : encoder, decoder inputs, LSTM cell type, vocabulary sizes, embedding dimensions
-                self.decode_outputs, self.decode_states = tf.contrib.legacy_seq2seq.embedding_rnn_seq2seq(self.enc_ip,self.dec_ip, stacked_lstm,
-                                                    xvocab_size, yvocab_size, emb_dim)
+                self.decode_outputs, self.decode_states = tf.contrib.legacy_seq2seq.embedding_rnn_seq2seq(
+                    self.enc_ip, self.dec_ip, stacked_lstm, xvocab_size, yvocab_size, emb_dim)
                 # share parameters
                 scope.reuse_variables()
                 # testing model, where output of previous timestep is fed as input
                 #  to the next timestep
                 self.decode_outputs_test, self.decode_states_test = tf.contrib.legacy_seq2seq.embedding_rnn_seq2seq(
-                    self.enc_ip, self.dec_ip, stacked_lstm, xvocab_size, yvocab_size,emb_dim,
+                    self.enc_ip, self.dec_ip, stacked_lstm, xvocab_size, yvocab_size, emb_dim,
                     feed_previous=True)
 
             # now, for training,
@@ -69,9 +75,11 @@ class Seq2Seq(object):
 
             # weighted loss
             #  TODO : add parameter hint
+            #  Creates a tensor with all elements set to 1.  Equal weighted loss
             loss_weights = [ tf.ones_like(label, dtype=tf.float32) for label in self.labels ]
+            #  The return value is the average log-perplexity per symbol (weighted).
             self.loss = tf.contrib.legacy_seq2seq.sequence_loss(self.decode_outputs, self.labels, loss_weights, yvocab_size)
-            # train op to minimize the loss
+            #  Train op to minimize the loss
             self.train_op = tf.train.AdamOptimizer(learning_rate=lr).minimize(self.loss)
 
         sys.stdout.write('<log> Building Graph ')
