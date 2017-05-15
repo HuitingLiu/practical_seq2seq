@@ -10,6 +10,8 @@ import data_utils
 
 tf.flags.DEFINE_boolean("restore", False, "restore the model from checkpoints")
 
+FLAGS = tf.flags.FLAGS
+
 # load data from pickle and npy files
 metadata, idx_q, idx_a = data.load_data(PATH='datasets/opensubtitle/')
 (trainX, trainY), (testX, testY), (validX, validY) = data_utils.split_dataset(idx_q, idx_a)
